@@ -14,9 +14,9 @@ public class RandomNumberController(IRandomNumberGeneratorService randomNumberSe
 	}
 
 	[HttpPost]
-	public IActionResult Generate(uint x0, uint m, uint a, uint c, int pageNumber = 1, int pageSize = 1000)
+	public IActionResult Generate(uint x0, uint m, uint a, uint c, uint numOfNumbers, int pageNumber = 1, int pageSize = 1000)
 	{
-		var randomNumbers = randomNumberService.GetRandomNumbers(x0, m, a, c).ToList();
+		var randomNumbers = randomNumberService.GetRandomNumbers(x0, m, a, c, numOfNumbers).ToList();
 
 		while ((randomNumbers.Count - (pageSize * pageNumber)) <= -pageSize)
 		{
@@ -34,9 +34,9 @@ public class RandomNumberController(IRandomNumberGeneratorService randomNumberSe
 	}
 
 	[HttpPost]
-	public IActionResult Download(uint x0, uint m, uint a, uint c)
+	public IActionResult Download(uint x0, uint m, uint a, uint c, uint numOfNumbers)
 	{
-		var randomNumbers = randomNumberService.GetRandomNumbers(x0, m, a, c);
+		var randomNumbers = randomNumberService.GetRandomNumbers(x0, m, a, c, numOfNumbers);
 		var content = string.Join(Environment.NewLine, randomNumbers);
 
 		byte[] bytes = Encoding.UTF8.GetBytes(content);

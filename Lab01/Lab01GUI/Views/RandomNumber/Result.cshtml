@@ -36,6 +36,8 @@
         <input type="hidden" name="m" value="@Context.Request.Form["m"]" />
         <input type="hidden" name="a" value="@Context.Request.Form["a"]" />
         <input type="hidden" name="c" value="@Context.Request.Form["c"]" />
+        <input type="hidden" name="numOfNumbers" value="@Context.Request.Form["numOfNumbers"]" />
+
         <input type="hidden" name="pageNumber" value="@(pageNumber)" />
      
 
@@ -56,6 +58,8 @@
 		<input type="hidden" name="m" value="@Context.Request.Form["m"]" />
 		<input type="hidden" name="a" value="@Context.Request.Form["a"]" />
 		<input type="hidden" name="c" value="@Context.Request.Form["c"]" />
+		<input type="hidden" name="numOfNumbers" value="@Context.Request.Form["numOfNumbers"]" />
+
 		<input type="hidden" name="pageSize" value="@pageSize" />
 
 		@* First and Previous Buttons *@
@@ -79,6 +83,7 @@
     <input type="hidden" name="m" value="@Context.Request.Form["m"]" />
     <input type="hidden" name="a" value="@Context.Request.Form["a"]" />
     <input type="hidden" name="c" value="@Context.Request.Form["c"]" />
+	<input type="hidden" name="numOfNumbers" value="@Context.Request.Form["numOfNumbers"]" />
     <input type="hidden" name="pageSize" value="@pageSize" />
     <button type="submit">Download as File</button>
 </form>
