@@ -1,21 +1,84 @@
 ﻿@{
-	ViewData["Title"] = "Random Number Result";
-	var randomNumbers = ViewBag.RandomNumbers as List<uint>;
+    ViewData["Title"] = "Random Number Result";
+    var randomNumbers = ViewBag.RandomNumbers as List<uint> ?? [];
+    var pageNumber = ViewBag.PageNumber;
+    var totalPages = ViewBag.TotalPages;
+    var pageSize = ViewBag.PageSize;
 }
 
-<h2>Random Numbers</h2>
+<link rel="stylesheet" href="~/css/RandomNumber/Result.css" asp-append-version="true" />
 
-<ul>
-	@foreach (var number in randomNumbers)
-	{
-		<li>@number</li>
-	}
-</ul>
+<h2>Random Numbers (Page @pageNumber of @totalPages)</h2>
 
-<form method="post" asp-action="Download">
-	<input type="hidden" name="x0" value="@Context.Request.Form["x0"]" />
-	<input type="hidden" name="m" value="@Context.Request.Form["m"]" />
-	<input type="hidden" name="a" value="@Context.Request.Form["a"]" />
-	<input type="hidden" name="c" value="@Context.Request.Form["c"]" />
-	<button type="submit">Download as File</button>
+<div class="random-result-table-wrapper">
+	<table>
+		<thead>
+			<tr>
+				<th>n</th>
+				<th>Xn</th>
+			</tr>
+		</thead>
+		<tbody>
+			@for (var i = 0; i < randomNumbers.Count; i++)
+			{
+				<tr>
+					<td>@((pageNumber - 1) * pageSize + i + 1)</td>
+					<td>@randomNumbers[i]</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>
+
+<div>
+    <form method="post" asp-action="Generate">
+        <input type="hidden" name="x0" value="@Context.Request.Form["x0"]" />
+        <input type="hidden" name="m" value="@Context.Request.Form["m"]" />
+        <input type="hidden" name="a" value="@Context.Request.Form["a"]" />
+        <input type="hidden" name="c" value="@Context.Request.Form["c"]" />
+        <input type="hidden" name="pageNumber" value="@(pageNumber)" />
+     
+
+        <label for="pageSize">Page Size:</label>
+        <select class="pageSize" id="pageSize" name="pageSize" onchange="this.form.submit()">
+	        <option value="500" selected="@((pageSize == 1000) ? "selected" : null)">1000</option>
+	        <option value="1000" selected="@((pageSize == 10000) ? "selected" : null)">10000</option>
+	        <option value="5000" selected="@((pageSize == 50000) ? "selected" : null)">50000</option>
+	        <option value="5000" selected="@((pageSize == 100000) ? "selected" : null)">100000</option>
+        </select>
+    </form>
+</div>
+
+<!-- Pagination Controls -->
+<div class="pagination-buttons">
+	<form method="post" asp-action="Generate">
+		<input type="hidden" name="x0" value="@Context.Request.Form["x0"]" />
+		<input type="hidden" name="m" value="@Context.Request.Form["m"]" />
+		<input type="hidden" name="a" value="@Context.Request.Form["a"]" />
+		<input type="hidden" name="c" value="@Context.Request.Form["c"]" />
+		<input type="hidden" name="pageSize" value="@pageSize" />
+
+		@* First and Previous Buttons *@
+		<button type="submit" name="pageNumber" value="1" @(pageNumber == 1 ? "disabled" : "")>First</button>
+		<button type="submit" name="pageNumber" value="@(pageNumber - 1)" @(pageNumber == 1 ? "disabled" : "")>Previous</button>
+
+		@* Page Number Navigation *@
+		@for (var i = 1; i <= totalPages; i++)
+		{
+			<button type="submit" name="pageNumber" value="@i" @(i == pageNumber ? "disabled" : "")>@i</button>
+		}
+
+		@* Next and Last Buttons *@
+		<button type="submit" name="pageNumber" value="@(pageNumber + 1)" @(pageNumber == totalPages ? "disabled" : "")>Next</button>
+		<button type="submit" name="pageNumber" value="@totalPages" @(pageNumber == totalPages ? "disabled" : "")>Last</button>
+	</form>
+</div>
+
+<form method="post" asp-action="Download" class="download-button">
+    <input type="hidden" name="x0" value="@Context.Request.Form["x0"]" />
+    <input type="hidden" name="m" value="@Context.Request.Form["m"]" />
+    <input type="hidden" name="a" value="@Context.Request.Form["a"]" />
+    <input type="hidden" name="c" value="@Context.Request.Form["c"]" />
+    <input type="hidden" name="pageSize" value="@pageSize" />
+    <button type="submit">Download as File</button>
 </form>

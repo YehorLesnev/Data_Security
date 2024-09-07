@@ -14,10 +14,21 @@ public class RandomNumberController(IRandomNumberGeneratorService randomNumberSe
 	}
 
 	[HttpPost]
-	public IActionResult Generate(uint x0, uint m, uint a, uint c)
+	public IActionResult Generate(uint x0, uint m, uint a, uint c, int pageNumber = 1, int pageSize = 1000)
 	{
 		var randomNumbers = randomNumberService.GetRandomNumbers(x0, m, a, c).ToList();
-		ViewBag.RandomNumbers = randomNumbers;
+
+		while ((randomNumbers.Count / (pageSize * pageNumber)) == 0)
+		{
+			--pageNumber;
+		}
+
+		var paginatedNumbers = randomNumbers.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+		ViewBag.TotalPages = (int)Math.Ceiling(randomNumbers.Count / (double)pageSize);
+		ViewBag.PageNumber = pageNumber;
+		ViewBag.PageSize = pageSize;
+		ViewBag.RandomNumbers = paginatedNumbers;
 
 		return View("Result");
 	}

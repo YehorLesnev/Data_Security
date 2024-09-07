@@ -1,0 +1,89 @@
+﻿/* Table styling */
+.random-result-table-wrapper table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 16px;
+}
+
+.random-result-table-wrapper table th, table td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.random-result-table-wrapper table thead {
+    background-color: #f2f2f2;
+}
+
+.random-result-table-wrapper table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Pagination buttons */
+.pagination-buttons form {
+    display: inline-block;
+    margin: 0 5px;
+}
+
+.pagination-buttons button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin: 5px 2px;
+}
+
+    .pagination-buttons button:hover {
+        background-color: #0056b3;
+    }
+
+    .pagination-buttons button:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+    }
+
+/* Page Size Dropdown */
+.pageSize {
+    padding: 6px;
+    margin-left: 10px;
+    font-size: 14px;
+}
+
+/* Common Button Styling */
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin: 5px;
+    transition: background-color 0.3s ease;
+}
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    button:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+    }
+
+/* Pagination Buttons */
+.pagination-buttons form {
+    display: inline-block;
+    margin: 0 5px;
+}
+
+.pagination-buttons button {
+    padding: 8px 16px;
+}
+
+/* Download Button */
+.download-button {
+    margin-top: 20px;
+}
