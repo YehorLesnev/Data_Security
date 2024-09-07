@@ -18,7 +18,7 @@ public class RandomNumberController(IRandomNumberGeneratorService randomNumberSe
 	{
 		var randomNumbers = randomNumberService.GetRandomNumbers(x0, m, a, c).ToList();
 
-		while ((randomNumbers.Count / (pageSize * pageNumber)) == 0)
+		while ((randomNumbers.Count - (pageSize * pageNumber)) <= -pageSize)
 		{
 			--pageNumber;
 		}
