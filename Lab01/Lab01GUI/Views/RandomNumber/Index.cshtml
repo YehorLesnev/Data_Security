@@ -1,0 +1,21 @@
+﻿@{
+	ViewData["Title"] = "Random Number Generator";
+}
+
+<h2>Random Number Generator</h2>
+
+<form method="post" asp-action="Generate">
+	<label for="x0">Initial Value (x0):</label>
+	<input type="number" id="x0" name="x0" required />
+
+	<label for="m">Modulus (m):</label>
+	<input type="number" id="m" name="m" required />
+
+	<label for="a">Multiplier (a):</label>
+	<input type="number" id="a" name="a" required />
+
+	<label for="c">Increment (c):</label>
+	<input type="number" id="c" name="c" required />
+
+	<button type="submit">Generate</button>
+</form>
