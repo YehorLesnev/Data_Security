@@ -41,10 +41,10 @@
 
         <label for="pageSize">Page Size:</label>
         <select class="pageSize" id="pageSize" name="pageSize" onchange="this.form.submit()">
-	        <option value="500" selected="@((pageSize == 1000) ? "selected" : null)">1000</option>
-	        <option value="1000" selected="@((pageSize == 10000) ? "selected" : null)">10000</option>
-	        <option value="5000" selected="@((pageSize == 50000) ? "selected" : null)">50000</option>
-	        <option value="5000" selected="@((pageSize == 100000) ? "selected" : null)">100000</option>
+			<option value="1000" selected="@((pageSize == 1000) ? "selected" : null)">1000</option>
+			<option value="10000" selected="@((pageSize == 10000) ? "selected" : null)">10000</option>
+			<option value="50000" selected="@((pageSize == 50000) ? "selected" : null)">50000</option>
+			<option value="100000" selected="@((pageSize == 100000) ? "selected" : null)">100000</option>
         </select>
     </form>
 </div>
