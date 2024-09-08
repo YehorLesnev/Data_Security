@@ -9,6 +9,7 @@ public static class ServiceRegisterer
 	{
 		services.AddScoped<IRandomNumberGeneratorService, RandomNumberGeneratorService>();
 		services.AddScoped<IFileWriterService, FileWriterService>();
+		services.AddScoped<IMD5Service, MD5Service>();
 
 		return services;
 	}
