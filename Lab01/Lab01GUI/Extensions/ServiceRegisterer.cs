@@ -8,6 +8,7 @@ public static class ServiceRegisterer
 	public static IServiceCollection RegisterServices(this IServiceCollection services)
 	{
 		services.AddScoped<IRandomNumberGeneratorService, RandomNumberGeneratorService>();
+		services.AddScoped<IFileWriterService, FileWriterService>();
 
 		return services;
 	}

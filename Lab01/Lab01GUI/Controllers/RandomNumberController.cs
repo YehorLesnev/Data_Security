@@ -1,11 +1,12 @@
-﻿using System.Text;
-using Lab01GUI.Services.Interfaces;
+﻿using Lab01GUI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lab01GUI.Controllers;
 
 [Route("[Controller]/[Action]")]
-public class RandomNumberController(IRandomNumberGeneratorService randomNumberService) : Controller
+public class RandomNumberController(
+	IRandomNumberGeneratorService randomNumberService,
+	IFileWriterService fileWriterService) : Controller
 {
 	[Route("[Action]")]
 	public IActionResult Index()
@@ -37,9 +38,7 @@ public class RandomNumberController(IRandomNumberGeneratorService randomNumberSe
 	public IActionResult Download(uint x0, uint m, uint a, uint c, uint numOfNumbers)
 	{
 		var randomNumbers = randomNumberService.GetRandomNumbers(x0, m, a, c, numOfNumbers);
-		var content = string.Join(Environment.NewLine, randomNumbers);
-
-		byte[] bytes = Encoding.UTF8.GetBytes(content);
-		return File(bytes, "text/plain", "RandomNumbers.txt");
+		
+		return File(fileWriterService.WriteToFile(randomNumbers, "n\t\tXn"), "text/plain", "RandomNumbers.txt");
 	}
 }
