@@ -2,21 +2,32 @@
 	ViewBag.Title = "MD5 Hash Calculator";
 }
 
-<h2>MD5 Hash Calculator</h2>
+<link rel="stylesheet" href="~/css/MD5/MD5.css" asp-append-version="true" />
 
-<form asp-controller="MD5" asp-action="GetHash" method="post">
-	<label>Input Text:</label>
-	<input type="text" name="inputText" />
-	<input type="submit" value="Compute Hash" />
-</form>
+<h2 style="text-align: center;">MD5 Hash Calculator</h2>
 
-<form asp-action="ComputeHashFromFile" method="post" enctype="multipart/form-data">
-	<label>Upload File:</label>
-	<input type="file" name="uploadedFile" />
-	<input type="submit" value="Compute Hash from File" />
-</form>
+<div class="md5-wrapper">
+	<form asp-controller="MD5" asp-action="GetHash" method="post">
+		<label>Input Text:</label>
+		@* <input type="text" name="inputText" value="@ViewBag.InputText" /> *@
 
-@if (ViewBag.Hash != null)
-{
-	<p>Computed MD5 Hash: @ViewBag.Hash</p>
-}
+		<textarea name="inputText">@ViewBag.InputText</textarea>
+
+		<input type="submit" value="Compute Hash" />
+	</form>
+
+	<form asp-action="ComputeHashFromFile" method="post" enctype="multipart/form-data">
+		<label>Upload File:</label>
+		<input type="file" name="uploadedFile" />
+		<input type="submit" value="Compute Hash from File" />
+	</form>
+
+	@if (ViewBag.Hash is not null)
+	{
+		if (ViewBag.FileName is not null)
+		{
+			<p style="text-align: center; margin-top: 20px;">File name: <b>@ViewBag.FileName</b></p>
+		}
+		<p style="text-align:center; margin-top: 30px;">Computed MD5 Hash: <b>@ViewBag.Hash</b></p>
+	}
+</div>

@@ -17,16 +17,21 @@ public class MD5Controller(IMD5Service mD5Service) : Controller
     [HttpPost]
     public IActionResult GetHash(string inputText)
     {
+        if(string.IsNullOrEmpty(inputText)) return View("Index"); 
+
         string hash = mD5Service.GetHash(inputText);
 
         ViewBag.Hash = hash;
+        ViewBag.InputText = inputText;
         return View("Index");
     }
 
     [HttpPost]
     public async Task<IActionResult> ComputeHashFromFile(IFormFile uploadedFile)
     {
-        if (uploadedFile is null) return View("Index");
+        if (uploadedFile is null) throw new ArgumentException("File is not selected or too big");
+
+        ViewBag.FileName = uploadedFile.FileName;
 
         using (var memoryStream = new MemoryStream())
         {

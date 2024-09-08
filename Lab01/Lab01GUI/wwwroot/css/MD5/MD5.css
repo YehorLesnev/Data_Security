@@ -1,0 +1,48 @@
+﻿/* Centering form and input elements */
+.md5-wrapper form {
+    display: grid;
+    grid-gap: 15px;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 300px;
+    margin: auto;
+}
+
+/* Styling input fields */
+.md5-wrapper input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* Styling labels */
+.md5-wrapper label {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* Styling the submit button */
+.md5-wrapper button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+    .md5-wrapper button:hover {
+        background-color: #0056b3;
+    }
+
+/* Align button in center */
+.md5-wrapper button {
+    margin-top: 15px;
+}
