@@ -1,5 +1,6 @@
 using Lab01GUI.Extensions;
 using Lab01GUI.Middleware;
+using Microsoft.AspNetCore.Http.Features;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,12 @@ builder.Services.RegisterServices();
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
+
+builder.Services.Configure<FormOptions>(options =>
+{
+    // Set the limit to 2 GB
+    options.MultipartBodyLengthLimit = 2_147_483_648;
+});
 
 var app = builder.Build();
 

@@ -1,0 +1,22 @@
+﻿@{
+	ViewBag.Title = "MD5 Hash Calculator";
+}
+
+<h2>MD5 Hash Calculator</h2>
+
+<form asp-controller="MD5" asp-action="GetHash" method="post">
+	<label>Input Text:</label>
+	<input type="text" name="inputText" />
+	<input type="submit" value="Compute Hash" />
+</form>
+
+<form asp-action="ComputeHashFromFile" method="post" enctype="multipart/form-data">
+	<label>Upload File:</label>
+	<input type="file" name="uploadedFile" />
+	<input type="submit" value="Compute Hash from File" />
+</form>
+
+@if (ViewBag.Hash != null)
+{
+	<p>Computed MD5 Hash: @ViewBag.Hash</p>
+}
