@@ -3,4 +3,6 @@
 public interface IFileWriterService
 {
 	public byte[] WriteToFile(IEnumerable<uint> randomNumbers, string header);
+
+	public byte[] WriteToFile(string text);
 }

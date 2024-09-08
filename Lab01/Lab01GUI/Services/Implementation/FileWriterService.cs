@@ -20,4 +20,7 @@ public class FileWriterService : IFileWriterService
 
 		return Encoding.UTF8.GetBytes(content.ToString());
 	}
+
+	public byte[] WriteToFile(string text) => 
+		Encoding.UTF8.GetBytes(text);
 }

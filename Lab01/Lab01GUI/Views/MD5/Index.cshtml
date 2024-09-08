@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="~/css/MD5/MD5.css" asp-append-version="true" />
 
 <h2 style="text-align: center;">MD5 Hash Calculator</h2>
+<a asp-action="IntegrityCheck" style="text-align: center;">MD5 Hash Integrity Check</a>
 
 <div class="md5-wrapper">
 	<form asp-controller="MD5" asp-action="GetHash" method="post">
@@ -29,5 +30,12 @@
 			<p style="text-align: center; margin-top: 20px;">File name: <b>@ViewBag.FileName</b></p>
 		}
 		<p style="text-align:center; margin-top: 30px;">Computed MD5 Hash: <b>@ViewBag.Hash</b></p>
+
+		<div style="height: 200px;">
+			<form method="post" asp-action="Download" class="download-button">
+				<input type="hidden" name="hashValue" value="@ViewBag.Hash" />
+				<button type="submit">Download as File</button>
+			</form>
+		</div>
 	}
 </div>

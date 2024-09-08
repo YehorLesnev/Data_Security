@@ -1,0 +1,38 @@
+﻿@{
+	ViewData["Title"] = "MD5 File Integrity Check";
+}
+
+<link rel="stylesheet" href="~/css/MD5/MD5.css" asp-append-version="true" />
+
+<h2 style="text-align: center;">MD5 File Integrity Check</h2>
+<a asp-action="Index" style="text-align: center;">MD5 Hash Calculator</a>
+
+<div class="md5-wrapper">
+	<form asp-asp-controller="MD5" asp-action="IntegrityCheck" method="post" enctype="multipart/form-data">
+		<div class="form-group">
+			<label for="file">Select a File:</label>
+			<input type="file" id="file" name="file" class="form-control" required />
+		</div>
+
+		<div class="form-group">
+			<label for="md5hash">MD5 Hash:</label>
+			<input type="text" id="md5hash" name="md5hash" value="@ViewBag.Hash" class="form-control" required />
+		</div>
+
+		<button type="submit" class="btn btn-primary mt-3">Check Integrity</button>
+	</form>
+</div>
+
+@if (ViewBag.Result != null)
+{
+	<div class="alert alert-info mt-3" style="text-align: center;">
+		@if (ViewBag.Result)
+		{
+			<strong style="color: green;">File Integrity Check Passed</strong>
+		}
+		else
+		{
+			<strong style="color: red;">File Integrity Check Failed</strong>
+		}
+	</div>
+}
