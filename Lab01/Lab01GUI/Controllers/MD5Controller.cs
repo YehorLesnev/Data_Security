@@ -26,6 +26,7 @@ public class MD5Controller(
 	{
 		if (file is null) throw new ArgumentException("File is not selected or too big");
 
+		ViewBag.FileName = file.FileName;
 		ViewBag.Hash = md5hash;
 		ViewBag.Result = false;
 		

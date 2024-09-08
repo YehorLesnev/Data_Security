@@ -25,6 +25,11 @@
 
 @if (ViewBag.Result != null)
 {
+	if (ViewBag.FileName is not null)
+	{
+		<p style="text-align: center; margin-top: 20px;">File name: <b>@ViewBag.FileName</b></p>
+	}
+
 	<div class="alert alert-info mt-3" style="text-align: center;">
 		@if (ViewBag.Result)
 		{
