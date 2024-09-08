@@ -8,19 +8,19 @@
 <form method="post" asp-action="Generate" style="align-self: center;">
 	<div style="display: inline-grid;">
 		<label for="x0">Initial Value (x0):</label>
-		<input type="number" id="x0" name="x0" required />
+			<input type="number" id="x0" name="x0" required min="0" step="1" />
 
 		<label for="m">Modulus (m):</label>
-		<input type="number" id="m" name="m" required />
+			<input type="number" id="m" name="m" required min="0" step="1" />
 
 		<label for="a">Multiplier (a):</label>
-		<input type="number" id="a" name="a" required />
+			<input type="number" id="a" name="a" required min="0" step="1" />
 
 		<label for="c">Increment (c):</label>
-		<input type="number" id="c" name="c" required />
+			<input type="number" id="c" name="c" required min="0" step="1" />
 
 		<label for="c">Count N:</label>
-		<input type="number" id="numOfNumbers" name="numOfNumbers" required />
+			<input type="number" id="numOfNumbers" name="numOfNumbers" required min="1" step="1" />
 
 		<button type="submit" style="margin: 20px;">Generate</button>
 	</div>
