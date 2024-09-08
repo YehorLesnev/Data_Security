@@ -17,9 +17,9 @@ public class MD5Controller(IMD5Service mD5Service) : Controller
     [HttpPost]
     public IActionResult GetHash(string inputText)
     {
-        if(string.IsNullOrEmpty(inputText)) return View("Index"); 
+        if(string.IsNullOrEmpty(inputText)) inputText = "";
 
-        string hash = mD5Service.GetHash(inputText);
+        string hash = mD5Service.GetHash(inputText).ToUpper();
 
         ViewBag.Hash = hash;
         ViewBag.InputText = inputText;
@@ -37,7 +37,7 @@ public class MD5Controller(IMD5Service mD5Service) : Controller
         {
             await uploadedFile.CopyToAsync(memoryStream);
 
-            string hash = mD5Service.GetHash(memoryStream.ToArray());
+            string hash = mD5Service.GetHash(memoryStream.ToArray()).ToUpper();
 
             ViewBag.Hash = hash;
         }
