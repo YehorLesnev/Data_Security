@@ -38,14 +38,14 @@ public class MD5Service : IMD5Service
         0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391
     ];
 
-    public string GetHash(string input)
+    public byte[] GetHash(string input)
     {
         byte[] inputBytes = Encoding.UTF8.GetBytes(input);
 
         return GetHash(inputBytes);
     }
 
-    public string GetHash(byte[] input)
+    public byte[] GetHash(byte[] input)
     {
         uint[] h = [0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476];
 
@@ -64,7 +64,25 @@ public class MD5Service : IMD5Service
             }
         }
 
-        return string.Concat(h.Select(x => BitConverter.ToString(BitConverter.GetBytes(x)).Replace("-", "").ToLower()));
+        return UintArrayToByteArray(h);//string.Concat(h.Select(x => BitConverter.ToString(BitConverter.GetBytes(x)).Replace("-", "").ToLower()));
+    }
+
+    public string GetHashString(string input) => 
+        BitConverter.ToString(GetHash(input)).Replace("-", "");
+
+    public string GetHashString(byte[] input) =>
+	    BitConverter.ToString(GetHash(input)).Replace("-", "");
+
+    private static byte[] UintArrayToByteArray(uint[] uintArray)
+    {
+	    byte[] byteArray = new byte[uintArray.Length * sizeof(uint)];
+
+	    for (int i = 0; i < uintArray.Length; i++)
+	    {
+		    BitConverter.GetBytes(uintArray[i]).CopyTo(byteArray, i * sizeof(uint));
+	    }
+
+	    return byteArray;
     }
 
     private static byte[] PadInput(byte[] input)

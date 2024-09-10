@@ -34,7 +34,7 @@ public class MD5Controller(
 		{
 			await file.CopyToAsync(memoryStream);
 
-			string hash = mD5Service.GetHash(memoryStream.ToArray()).ToUpper();
+			string hash = mD5Service.GetHashString(memoryStream.ToArray()).ToUpper();
 
 			ViewBag.Result = hash.Equals(md5hash, StringComparison.InvariantCultureIgnoreCase);
 		}
@@ -47,7 +47,7 @@ public class MD5Controller(
 	{
 		if (string.IsNullOrEmpty(inputText)) inputText = "";
 
-		string hash = mD5Service.GetHash(inputText).ToUpper();
+		string hash = mD5Service.GetHashString(inputText).ToUpper();
 
 		ViewBag.Hash = hash;
 		ViewBag.InputText = inputText;
@@ -65,7 +65,7 @@ public class MD5Controller(
 		{
 			await uploadedFile.CopyToAsync(memoryStream);
 
-			string hash = mD5Service.GetHash(memoryStream.ToArray()).ToUpper();
+			string hash = mD5Service.GetHashString(memoryStream.ToArray()).ToUpper();
 
 			ViewBag.Hash = hash;
 		}

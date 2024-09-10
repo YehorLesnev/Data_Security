@@ -2,8 +2,13 @@
 
 public interface IMD5Service
 {
-    string GetHash(string input);
+	byte[] GetHash(string input);
 
 
-    string GetHash(byte[] input);
+    byte[] GetHash(byte[] input);
+
+
+    string GetHashString(string input);
+
+    string GetHashString(byte[] input);
 }
