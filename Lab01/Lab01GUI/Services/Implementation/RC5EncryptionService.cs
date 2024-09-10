@@ -16,9 +16,9 @@ public class RC5_CBC_PadService
 	private readonly ulong _arrQ;
 	private readonly int _numberOfRounds;
 	private readonly int _secretKeyLengthInBytes;
-	private readonly ulong[] _s;
+	private ulong[] _s;
 
-	public RC5_CBC_PadService(WordLength wordLength, int numberOfRounds, int secretKeyLengthInBytes, string password)
+	public RC5_CBC_PadService(WordLength wordLength, int numberOfRounds, int secretKeyLengthInBytes)
 	{
 		_md5 = new MD5Service();
 		_pseudoRandomGenerator = new RandomNumberGeneratorService();
@@ -30,11 +30,12 @@ public class RC5_CBC_PadService
 		_arrQ = wordLength.Q;
 		_numberOfRounds = numberOfRounds;
 		_secretKeyLengthInBytes = secretKeyLengthInBytes;
-		_s = GenerateArrayS(password);
 	}
 
-	public byte[] Encrypt(byte[] message)
+	public byte[] Encrypt(byte[] message, string password)
 	{
+		_s = GenerateArrayS(password);
+
 		byte[] extendedMessage = AddMessagePadding(message);
 		ulong[] words = SplitArrayToWords(extendedMessage);
 		byte[] result = new byte[_wordLengthInBytes * 2 + extendedMessage.Length];
@@ -67,8 +68,10 @@ public class RC5_CBC_PadService
 		return result;
 	}
 
-	public byte[] Decrypt(byte[] message)
+	public byte[] Decrypt(byte[] message, string password)
 	{
+		_s = GenerateArrayS(password);
+
 		// Calculate IV
 		byte[] ivArr = new byte[_wordLengthInBytes * 2];
 		Array.Copy(message, 0, ivArr, 0, ivArr.Length);

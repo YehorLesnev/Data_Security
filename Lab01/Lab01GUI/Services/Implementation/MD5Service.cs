@@ -64,7 +64,7 @@ public class MD5Service : IMD5Service
             }
         }
 
-        return UintArrayToByteArray(h);//string.Concat(h.Select(x => BitConverter.ToString(BitConverter.GetBytes(x)).Replace("-", "").ToLower()));
+        return UintArrayToByteArray(h);
     }
 
     public string GetHashString(string input) => 
