@@ -30,6 +30,7 @@ public class RC5_CBC_PadService
 		_arrQ = wordLength.Q;
 		_numberOfRounds = numberOfRounds;
 		_secretKeyLengthInBytes = secretKeyLengthInBytes;
+		_s = [];
 	}
 
 	public byte[] Encrypt(byte[] message, string password)
@@ -332,10 +333,10 @@ public class RC5_CBC_PadService
 		return [a, b];
 	}
 
-	private ulong[] GenerateIv() =>
-		_pseudoRandomGenerator.GetRandomNumbers(0, int.MaxValue - 1, 16807, 0, 2)
-			.Select(x => (ulong)x)
-			.ToArray();
+	private ulong[] GenerateIv() => [
+		(ulong)_pseudoRandomGenerator.Next(),
+		(ulong)_pseudoRandomGenerator.Next()
+	];
 
 	private byte[] EncryptEcb(byte[] message)
 	{
