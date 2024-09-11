@@ -6,7 +6,7 @@ namespace Lab01GUI.Controllers;
 public class RC5EncryptionController : Controller
 {
 	private readonly RC5_CBC_PadService _rc5Service = new(
-		new RC5_CBC_PadService.WordLength(16), // Example WordLength
+		new RC5_CBC_PadService.WordLength(16), // WordLength
 		12, // Number of Rounds
 		16 // Secret Key Length in Bytes
 		);
