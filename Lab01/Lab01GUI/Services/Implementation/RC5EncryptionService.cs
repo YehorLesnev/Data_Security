@@ -116,6 +116,7 @@ public class RC5_CBC_PadService
 		return RemoveMessagePadding(result);
 	}
 
+	#region SecretKeyGen
 	private ulong[] GenerateArrayS(string password)
 	{
 		byte[] arrK = GenerateSecretKey(password);
@@ -180,6 +181,9 @@ public class RC5_CBC_PadService
 		return result;
 	}
 
+#endregion
+
+	#region HelperMethods
 	private ulong[] SplitArrayToWords(byte[] byteArray)
 	{
 		int numberOfWords = byteArray.Length / _wordLengthInBytes + byteArray.Length % _wordLengthInBytes;
@@ -229,8 +233,11 @@ public class RC5_CBC_PadService
 	private ulong[] InitArrayS()
 	{
 		ulong[] arrS = new ulong[2 * _numberOfRounds + 2];
+	
+		// S[0]:=Pw
 		arrS[0] = _arrP;
 
+		// S[i]:=S[i-1]+Qw
 		for (int i = 1; i < arrS.Length; i++)
 		{
 			arrS[i] = (arrS[i - 1] + _arrQ) & _wordBytesUsage;
@@ -311,6 +318,7 @@ public class RC5_CBC_PadService
 		a = (a + _s[0]) & _wordBytesUsage;
 		b = (b + _s[1]) & _wordBytesUsage;
 
+		// A:=((AB)<<<B)+S[2i], B:=((BA)<<<A)+S[2i+1]
 		for (int i = 1; i <= _numberOfRounds; i++)
 		{
 			a ^= b;
@@ -322,11 +330,13 @@ public class RC5_CBC_PadService
 			b = (b + _s[2 * i + 1]) & _wordBytesUsage;
 		}
 
+		// C(A, B)
 		return [a, b];
 	}
 
 	private ulong[] DecryptTwoWords(ulong a, ulong b)
 	{
+		// B:=((B-S[2i+1])>>>A)A, A:=((A-S[2i])>>>B)B
 		for (int i = _numberOfRounds; i >= 1; i--)
 		{
 			b = (b - _s[2 * i + 1]) & _wordBytesUsage;
@@ -338,6 +348,7 @@ public class RC5_CBC_PadService
 			a ^= b;
 		}
 
+		// M:=(A-S[0],B-S[1])
 		b = (b - _s[1]) & _wordBytesUsage;
 		a = (a - _s[0]) & _wordBytesUsage;
 
@@ -349,6 +360,9 @@ public class RC5_CBC_PadService
 		(ulong)_pseudoRandomGenerator.Next()
 	];
 
+	#endregion
+
+	#region ECB
 	private byte[] EncryptEcb(byte[] message)
 	{
 		byte[] extendedMessage = AddMessagePadding(message);
@@ -391,7 +405,9 @@ public class RC5_CBC_PadService
 
 		return result;
 	}
+	#endregion
 
+	#region WordLength
 	public class WordLength
 	{
 		public int Length { get; }
@@ -441,4 +457,5 @@ public class RC5_CBC_PadService
 			this.Q = q;
 		}
 	}
+	#endregion
 }
