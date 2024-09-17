@@ -128,6 +128,7 @@ public class RC5_CBC_PadService
 		ulong b = 0;
 		int t = Math.Max(arrL.Length, 2 * _numberOfRounds + 2);
 
+		// Mix L and S arrays
 		for (int s = 1; s < t * 3; s++)
 		{
 			arrS[i] = ((arrS[i] + a + b) << 3) & _wordBytesUsage;
@@ -144,29 +145,39 @@ public class RC5_CBC_PadService
 
 	private byte[] GenerateSecretKey(string password)
 	{
-		byte[] hash = _md5.GetHash(Encoding.UTF8.GetBytes(password));
+		byte[] result = new byte[_secretKeyLengthInBytes];
+		byte[] passwordHash = _md5.GetHash(Encoding.UTF8.GetBytes(password));
 
-		if (hash.Length > _secretKeyLengthInBytes)
+		byte[] hash = new byte[_secretKeyLengthInBytes];
+
+		if (_secretKeyLengthInBytes == 8)
 		{
-			byte[] result = new byte[_secretKeyLengthInBytes];
-			Array.Copy(hash, hash.Length - _secretKeyLengthInBytes, result, 0, _secretKeyLengthInBytes);
-			return result;
+			Array.Copy(passwordHash, passwordHash.Length - _secretKeyLengthInBytes, result, 0, _secretKeyLengthInBytes);
 		}
-
-		if (hash.Length < _secretKeyLengthInBytes)
+		else if (_secretKeyLengthInBytes == 16)
 		{
-			byte[] result = new byte[_secretKeyLengthInBytes];
+			hash = passwordHash;
+		}
+		else if (_secretKeyLengthInBytes == 32)
+		{
+			Array.Copy(passwordHash, 0, result, 0, _secretKeyLengthInBytes);
+			Array.Copy(_md5.GetHash(passwordHash), 0, result, passwordHash.Length, _secretKeyLengthInBytes);
+		}
+		else if (hash.Length > _secretKeyLengthInBytes)
+		{
+			Array.Copy(hash, hash.Length - _secretKeyLengthInBytes, result, 0, _secretKeyLengthInBytes);
+		}
+		else if (hash.Length < _secretKeyLengthInBytes)
+		{
 			for (int i = 0; i < _secretKeyLengthInBytes / hash.Length + _secretKeyLengthInBytes % hash.Length; i++)
 			{
 				Array.Copy(hash, 0, result, _secretKeyLengthInBytes - (i + 1) * hash.Length,
 					Math.Min(_secretKeyLengthInBytes - (i + 1) * hash.Length, hash.Length));
 				hash = _md5.GetHash(hash);
 			}
-
-			return result;
 		}
 
-		return hash;
+		return result;
 	}
 
 	private ulong[] SplitArrayToWords(byte[] byteArray)
@@ -174,7 +185,7 @@ public class RC5_CBC_PadService
 		int numberOfWords = byteArray.Length / _wordLengthInBytes + byteArray.Length % _wordLengthInBytes;
 		ulong[] wordList = new ulong[numberOfWords];
 
-		for (int i = 0; i < numberOfWords; i++)
+		for (int i = 0; i < numberOfWords; ++i)
 		{
 			int offset = i * _wordLengthInBytes;
 			int numberOfBytes = Math.Min(_wordLengthInBytes, byteArray.Length - offset);
@@ -232,7 +243,7 @@ public class RC5_CBC_PadService
 	{
 		if (message.Length % (_wordLengthInBytes * 2) == 0)
 		{
-			return message.ToArray();
+			return [.. message];
 		}
 
 		int bytesToAdd = _wordLengthInBytes * 2 - message.Length % (_wordLengthInBytes * 2);
