@@ -38,6 +38,7 @@ public class RC5_CBC_PadService
 		_s = GenerateArrayS(password);
 
 		byte[] extendedMessage = AddMessagePadding(message);
+		
 		ulong[] words = SplitArrayToWords(extendedMessage);
 		byte[] result = new byte[_wordLengthInBytes * 2 + extendedMessage.Length];
 
@@ -149,32 +150,30 @@ public class RC5_CBC_PadService
 		byte[] result = new byte[_secretKeyLengthInBytes];
 		byte[] passwordHash = _md5.GetHash(Encoding.UTF8.GetBytes(password));
 
-		byte[] hash = new byte[_secretKeyLengthInBytes];
-
 		if (_secretKeyLengthInBytes == 8)
 		{
 			Array.Copy(passwordHash, passwordHash.Length - _secretKeyLengthInBytes, result, 0, _secretKeyLengthInBytes);
 		}
 		else if (_secretKeyLengthInBytes == 16)
 		{
-			hash = passwordHash;
+			result = passwordHash;
 		}
 		else if (_secretKeyLengthInBytes == 32)
 		{
 			Array.Copy(passwordHash, 0, result, 0, _secretKeyLengthInBytes);
 			Array.Copy(_md5.GetHash(passwordHash), 0, result, passwordHash.Length, _secretKeyLengthInBytes);
 		}
-		else if (hash.Length > _secretKeyLengthInBytes)
+		else if (passwordHash.Length > _secretKeyLengthInBytes)
 		{
-			Array.Copy(hash, hash.Length - _secretKeyLengthInBytes, result, 0, _secretKeyLengthInBytes);
+			Array.Copy(passwordHash, passwordHash.Length - _secretKeyLengthInBytes, result, 0, _secretKeyLengthInBytes);
 		}
-		else if (hash.Length < _secretKeyLengthInBytes)
+		else if (passwordHash.Length < _secretKeyLengthInBytes)
 		{
-			for (int i = 0; i < _secretKeyLengthInBytes / hash.Length + _secretKeyLengthInBytes % hash.Length; i++)
+			for (int i = 0; i < _secretKeyLengthInBytes / passwordHash.Length + _secretKeyLengthInBytes % passwordHash.Length; i++)
 			{
-				Array.Copy(hash, 0, result, _secretKeyLengthInBytes - (i + 1) * hash.Length,
-					Math.Min(_secretKeyLengthInBytes - (i + 1) * hash.Length, hash.Length));
-				hash = _md5.GetHash(hash);
+				Array.Copy(passwordHash, 0, result, _secretKeyLengthInBytes - (i + 1) * passwordHash.Length,
+					Math.Min(_secretKeyLengthInBytes - (i + 1) * passwordHash.Length, passwordHash.Length));
+				passwordHash = _md5.GetHash(passwordHash);
 			}
 		}
 
