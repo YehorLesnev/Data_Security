@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Lab01GUI.Controllers;
 
-[RequestSizeLimit(1_000_000_000)]
-[RequestFormLimits(MultipartBodyLengthLimit = 1_000_000_000)]
+[RequestSizeLimit(2_000_000_000)]
+[RequestFormLimits(MultipartBodyLengthLimit = 2_000_000_000)]
 public class RC5EncryptionController : Controller
 {
 	private readonly RC5_CBC_PadService _rc5Service = new(
@@ -52,7 +52,7 @@ public class RC5EncryptionController : Controller
 			return BadRequest("No file uploaded.");
 		}
 
-        using var memoryStream = new MemoryStream();
+		using var memoryStream = new MemoryStream();
         
 		await file.CopyToAsync(memoryStream);
         var fileBytes = memoryStream.ToArray();
