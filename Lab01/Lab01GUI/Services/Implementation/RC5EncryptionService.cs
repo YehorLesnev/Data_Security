@@ -35,6 +35,9 @@ public class RC5_CBC_PadService
 
 	public byte[] Encrypt(byte[] message, string password)
 	{
+		if(_numberOfRounds <= 0 || _secretKeyLengthInBytes <= 0)
+			return message;
+
 		_s = GenerateArrayS(password);
 
 		byte[] extendedMessage = AddMessagePadding(message);
@@ -74,6 +77,9 @@ public class RC5_CBC_PadService
 
 	public byte[] Decrypt(byte[] message, string password)
 	{
+		if(_numberOfRounds <= 0 || _secretKeyLengthInBytes <= 0)
+			return message;
+
 		_s = GenerateArrayS(password);
 
 		// Calculate IV
@@ -128,6 +134,9 @@ public class RC5_CBC_PadService
 		ulong[] arrL = SplitArrayToWords(arrK);
 		ulong[] arrS = InitArrayS();
 
+		if(arrL.Length == 0)
+			return [];
+
 		int i = 0;
 		int j = 0;
 		ulong a = 0;
@@ -173,10 +182,9 @@ public class RC5_CBC_PadService
 		}
 		else if (passwordHash.Length < _secretKeyLengthInBytes)
 		{
-			for (int i = 0; i < _secretKeyLengthInBytes / passwordHash.Length + _secretKeyLengthInBytes % passwordHash.Length; i++)
+			for (int i = 0; i < _secretKeyLengthInBytes / passwordHash.Length; i++)
 			{
-				Array.Copy(passwordHash, 0, result, _secretKeyLengthInBytes - (i + 1) * passwordHash.Length,
-					Math.Min(_secretKeyLengthInBytes - (i + 1) * passwordHash.Length, passwordHash.Length));
+				Array.Copy(passwordHash, 0, result, i * passwordHash.Length, passwordHash.Length);
 				passwordHash = _md5.GetHash(passwordHash);
 			}
 		}
@@ -196,6 +204,9 @@ public class RC5_CBC_PadService
 		{
 			int offset = i * _wordLengthInBytes;
 			int numberOfBytes = Math.Min(_wordLengthInBytes, byteArray.Length - offset);
+
+			if(numberOfBytes < 0)
+				return wordList;
 
 			byte[] value = new byte[_wordLengthInBytes];
 			Array.Copy(byteArray, offset, value, 0, numberOfBytes);
