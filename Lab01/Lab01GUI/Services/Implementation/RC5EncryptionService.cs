@@ -67,6 +67,8 @@ public class RC5_CBC_PadService
 			preB = twoWordsEncrypted[1];
 		}
 
+		_s = [];
+
 		return result;
 	}
 
@@ -113,6 +115,8 @@ public class RC5_CBC_PadService
 			preA = words[i];
 			preB = words[i + 1];
 		}
+
+		_s = [];
 
 		return RemoveMessagePadding(result);
 	}
