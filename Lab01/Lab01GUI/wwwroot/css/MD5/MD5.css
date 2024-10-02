@@ -1,4 +1,8 @@
-﻿.md5-wrapper {
+﻿h2{
+    text-align: center;
+}
+
+.md5-wrapper {
     text-align: center;
 }
 
@@ -10,6 +14,7 @@ a {
 
 /* Centering form and input elements */
 .md5-wrapper form {
+    box-sizing: content-box;
     display: grid;
     grid-gap: 15px;
     background-color: #f9f9f9;

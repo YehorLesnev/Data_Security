@@ -1,0 +1,24 @@
+﻿@{
+	ViewData["Title"] = "Encrypt Text";
+	var maxLength = ViewBag.MaxLength;
+}
+
+<h2>Encrypt Text</h2>
+
+<a asp-action="Decrypt" style="text-align: center;">Decrypt</a>
+
+<div class="md5-wrapper">
+	<form asp-action="EncryptAction" method="post" enctype="multipart/form-data">
+		<div>
+			<label for="plainText">Plain Text:</label>
+			<textarea id="plainText" name="plainText" rows="5" cols="40" maxlength="@maxLength"></textarea>
+		</div>
+		<div>
+			<label for="publicKeyFile">Public Key File:</label>
+			<input type="file" id="publicKeyFile" name="publicKeyFile" />
+		</div>
+		<div>
+			<button type="submit">Encrypt</button>
+		</div>
+	</form>
+</div>

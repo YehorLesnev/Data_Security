@@ -1,0 +1,19 @@
+﻿@{
+	ViewData["Title"] = "Generate RSA Keys";
+}
+
+<link rel="stylesheet" href="~/css/MD5/MD5.css" asp-append-version="true" />
+
+<h2>Generate RSA Keys</h2>
+
+<a asp-action="Encrypt" style="text-align: center;">Encrypt</a>
+<a asp-action="Decrypt" style="text-align: center;">Decrypt</a>
+
+<div class="md5-wrapper">
+	<form asp-action="GenerateKeysAction" method="post">
+		<label for="keySize">Key Size:</label>
+		<input type="number" id="m" name="keySize" required min="384" max="16384" step="1" />
+
+		<button type="submit">Generate Keys</button>
+	</form>
+</div>

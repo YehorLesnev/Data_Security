@@ -1,0 +1,51 @@
+﻿@{
+    ViewData["Title"] = "RSA Keys Generated";
+
+    var publicKey = ViewBag.PublicKey;
+    var privateKey = ViewBag.PrivateKey;
+}
+
+<h2>RSA Keys Generated</h2>
+
+<a asp-action="Encrypt" style="text-align: center;">Encrypt</a>
+<a asp-action="Decrypt" style="text-align: center;">Decrypt</a>
+
+<div>
+    <h3>Public Key:</h3>
+    <button class="btn btn-primary" onclick="downloadPublicKey()">Download Public Key</button>
+    <pre>@publicKey</pre>
+</div>
+
+<div>
+    <h3>Private Key:</h3>
+    <button class="btn btn-danger" onclick="downloadPrivateKey()">Download Private Key</button>
+    <pre>@privateKey</pre>
+</div>
+
+<script>
+    function downloadPrivateKey() {
+        const key = `@Html.Raw(privateKey)`;
+        const fileName = 'privateKey.xml';
+
+        return downloadKey(key, fileName);
+    }
+
+    function downloadPublicKey() {
+        const key = `@Html.Raw(publicKey)`;
+        const fileName = 'publicKey.xml';
+
+        return downloadKey(key, fileName);
+    }
+
+    function downloadKey(keyValue, fileName) {
+        const blob = new Blob([keyValue], { type: 'application/xml' });
+
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = fileName;
+
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+</script>

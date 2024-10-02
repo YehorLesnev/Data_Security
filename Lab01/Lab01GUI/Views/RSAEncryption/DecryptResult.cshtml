@@ -1,0 +1,12 @@
+﻿@{
+    ViewData["Title"] = "Decryption Result";
+}
+
+<h2>Decryption Result</h2>
+
+<a asp-action="Encrypt" style="text-align: center;">Encrypt</a>
+
+<div class="md5-wrapper">
+    <h3>Decrypted Text:</h3>
+    <pre>@ViewBag.DecryptedText</pre>
+</div>
