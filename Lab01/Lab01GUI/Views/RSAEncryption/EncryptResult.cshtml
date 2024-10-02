@@ -1,14 +1,56 @@
 ﻿@{
-	ViewData["Title"] = "Encryption Result";
+	ViewData["Title"] = "Encrypt Text";
+	var maxLength = ViewBag.MaxLength;
 }
 
-<h2>Encryption Result</h2>
+<h2>Encrypt Text</h2>
 
 <a asp-action="Decrypt" style="text-align: center;">Decrypt</a>
 
 <div class="md5-wrapper">
-	<div>
-		<h3>Encrypted Text (Base64):</h3>
-		<pre>@ViewBag.EncryptedText</pre>
-	</div>
+	<form asp-action="EncryptAction" method="post" enctype="multipart/form-data">
+		<div>
+			<label for="plainText">Plain Text:</label>
+			<textarea id="plainText" name="plainText" rows="5" cols="40" maxlength="@maxLength"></textarea>
+		</div>
+		<div>
+			<label for="publicKeyFile">Public Key File:</label>
+			<input type="file" id="publicKeyFile" name="publicKeyFile" />
+		</div>
+		<div>
+			<button type="submit">Encrypt</button>
+		</div>
+	</form>
+	@if (@ViewBag.ExecutionTime is not null)
+	{
+		<br />
+		<div>
+			<div>
+				<h5>Execution Time:</h5>
+				<p>@ViewBag.ExecutionTime ms</p>
+			</div>
+			<div>
+				<h5>Input Lenght:</h5>
+				<p>@ViewBag.InputLength</p>
+			</div>
+		</div>
+	}
+
 </div>
+
+<script>
+	downloadEncryptedFile();
+
+	function downloadEncryptedFile() {
+		var downloadUrl = '@Url.Action("DownloadEncryptedFile", "RSAEncryption")';
+
+		var link = document.createElement('a');
+		link.href = downloadUrl;
+		link.download = 'rsa-encrypted.enc';
+
+		document.body.appendChild(link);
+		link.click();
+
+		document.body.removeChild(link);
+	}
+</script>

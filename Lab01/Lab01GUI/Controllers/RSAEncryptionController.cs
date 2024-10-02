@@ -1,6 +1,6 @@
 ﻿using Lab01GUI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Text;
+using System.Diagnostics;
 
 namespace Lab01GUI.Controllers;
 
@@ -8,102 +8,110 @@ namespace Lab01GUI.Controllers;
 [RequestFormLimits(MultipartBodyLengthLimit = 2_000_000_000)]
 public class RSAEncryptionController(IRSAEncryptionService rsaService) : Controller
 {
-	[HttpGet]
-	public IActionResult GenerateKeys()
-	{
-		return View();
-	}
+    [HttpGet]
+    public IActionResult GenerateKeys()
+    {
+        return View();
+    }
 
-	// POST: RSAEncryption/GenerateKeys
-	[HttpPost]
-	[ValidateAntiForgeryToken]
-	public IActionResult GenerateKeysAction(int keySize)
-	{
-		rsaService.SetKeySize(keySize);
-		var keyResult = rsaService.GenerateKeys();
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult GenerateKeysAction(int keySize)
+    {
+        rsaService.SetKeySize(keySize);
 
-		ViewBag.PublicKey = keyResult.PublicKey;
-		ViewBag.PrivateKey = keyResult.PrivateKey;
+        Stopwatch stopwatch = new();
+        stopwatch.Start();
 
-		return View("GenerateKeysResult");
-	}
+        var keyResult = rsaService.GenerateKeys();
 
-	// Download the public key as a file
-	[HttpGet]
-	public IActionResult DownloadPublicKey()
-	{
-		var keyResult = rsaService.GenerateKeys();
-		var publicKeyBytes = Encoding.UTF8.GetBytes(keyResult.PublicKey);
-		return File(publicKeyBytes, "application/xml", "publicKey.xml");
-	}
+        stopwatch.Stop();
+        ViewBag.ExecutionTime = stopwatch.ElapsedMilliseconds;
 
-	// Download the private key as a file
-	[HttpGet]
-	public IActionResult DownloadPrivateKey()
-	{
-		var keyResult = rsaService.GenerateKeys();
-		var privateKeyBytes = Encoding.UTF8.GetBytes(keyResult.PrivateKey);
-		return File(privateKeyBytes, "application/xml", "privateKey.xml");
-	}
+        ViewBag.PublicKey = keyResult.PublicKey;
+        ViewBag.PrivateKey = keyResult.PrivateKey;
 
-	// GET: RSAEncryption/Encrypt
-	[HttpGet]
-	public IActionResult Encrypt()
-	{
-		return View();
-	}
+        return View("GenerateKeysResult");
+    }
 
-	// POST: RSAEncryption/Encrypt
-	[HttpPost]
-	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> EncryptAction(string plainText, IFormFile publicKeyFile)
-	{
-		if (string.IsNullOrWhiteSpace(plainText) || publicKeyFile == null)
+    [HttpGet]
+    public IActionResult Encrypt()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> EncryptAction(string plainText, IFormFile publicKeyFile)
+    {
+        if (string.IsNullOrWhiteSpace(plainText) || publicKeyFile == null)
+        {
+            return BadRequest("File to encrypt and public key file are required.");
+        }
+
+        using var publicKeyStream = new StreamReader(publicKeyFile.OpenReadStream());
+        var publicKey = await publicKeyStream.ReadToEndAsync();
+
+        Stopwatch stopwatch = new();
+        stopwatch.Start();
+
+        var encryptedBytes = rsaService.Encrypt(plainText, publicKey);
+
+        stopwatch.Stop();
+        ViewBag.ExecutionTime = stopwatch.ElapsedMilliseconds;
+        ViewBag.InputLength = plainText.Length;
+
+        TempData["EncryptedFile"] = Convert.ToBase64String(encryptedBytes);
+
+        return View("EncryptResult");
+    }
+
+    [HttpGet]
+    public IActionResult DownloadEncryptedFile()
+    {
+		if (TempData["EncryptedFile"] is not string encryptedFileBase64)
 		{
-			return BadRequest("File to encrypt and public key file are required.");
+			return NotFound("No encrypted file available.");
 		}
 
-		// Read the public key file
-		using var publicKeyStream = new StreamReader(publicKeyFile.OpenReadStream());
-		var publicKey = await publicKeyStream.ReadToEndAsync();
+		var encryptedFileBytes = Convert.FromBase64String(encryptedFileBase64);
 
-		// Encrypt the data
-		var encryptedBytes = rsaService.Encrypt(plainText, publicKey);
+        return File(encryptedFileBytes, "application/octet-stream", "rsa-encrypted.enc");
+    }
 
-		return File(encryptedBytes, "application/octet-stream", "rsa-encrypted.enc");
-	}
+    [HttpGet]
+    public IActionResult Decrypt()
+    {
+        return View();
+    }
 
-	// GET: RSAEncryption/Decrypt
-	[HttpGet]
-	public IActionResult Decrypt()
-	{
-		return View();
-	}
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DecryptAction(IFormFile file, IFormFile privateKeyFile)
+    {
+        if (file == null || privateKeyFile == null)
+        {
+            return BadRequest("Encrypted file, key file, and private key file are required.");
+        }
 
-	// POST: RSAEncryption/Decrypt
-	[HttpPost]
-	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> DecryptAction(IFormFile file, IFormFile privateKeyFile)
-	{
-		if (file == null || privateKeyFile == null)
-		{
-			return BadRequest("Encrypted file, key file, and private key file are required.");
-		}
+        using var fileMemoryStream = new MemoryStream();
+        await file.CopyToAsync(fileMemoryStream);
+        var encryptedFileBytes = fileMemoryStream.ToArray();
 
-		// Read the encrypted file
-		using var fileMemoryStream = new MemoryStream();
-		await file.CopyToAsync(fileMemoryStream);
-		var encryptedFileBytes = fileMemoryStream.ToArray();
+        using var privateKeyStream = new StreamReader(privateKeyFile.OpenReadStream());
+        var privateKey = await privateKeyStream.ReadToEndAsync();
 
-		// Read the private key file
-		using var privateKeyStream = new StreamReader(privateKeyFile.OpenReadStream());
-		var privateKey = await privateKeyStream.ReadToEndAsync();
-		
-		// Decrypt the data
-		var decryptedText = rsaService.Decrypt(encryptedFileBytes, privateKey);
+        Stopwatch stopwatch = new();
+        stopwatch.Start();
 
-		ViewBag.DecryptedText = decryptedText;
+        var decryptedText = rsaService.Decrypt(encryptedFileBytes, privateKey);
 
-		return View("DecryptResult");
-	}
+        stopwatch.Stop();
+        ViewBag.ExecutionTime = stopwatch.ElapsedMilliseconds;
+        ViewBag.InputLength = decryptedText.Length;
+
+        ViewBag.DecryptedText = decryptedText;
+
+        return View("DecryptResult");
+    }
 }

@@ -22,6 +22,15 @@
     <pre>@privateKey</pre>
 </div>
 
+@if (@ViewBag.ExecutionTime is not null)
+{
+	<br />
+	<div>
+		<h3>Execution Time:</h3>
+		<p>@ViewBag.ExecutionTime ms</p>
+	</div>
+}
+
 <script>
     function downloadPrivateKey() {
         const key = `@Html.Raw(privateKey)`;

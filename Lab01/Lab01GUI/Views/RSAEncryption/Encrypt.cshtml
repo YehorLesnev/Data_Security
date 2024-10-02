@@ -21,4 +21,17 @@
 			<button type="submit">Encrypt</button>
 		</div>
 	</form>
+	@if (@ViewBag.ExecutionTime is not null)
+	{
+		<br />
+		<div>
+			<h3>Execution Time:</h3>
+			<p>@ViewBag.ExecutionTime ms</p>
+		</div>
+		<div>
+			<h3>Input Lenght:</h3>
+			<p>@ViewBag.InputLength</p>
+		</div>
+	}
+
 </div>

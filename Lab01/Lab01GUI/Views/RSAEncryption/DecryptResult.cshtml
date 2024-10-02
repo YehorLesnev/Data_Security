@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Decryption Result";
+	ViewData["Title"] = "Decryption Result";
 }
 
 <h2>Decryption Result</h2>
@@ -7,6 +7,19 @@
 <a asp-action="Encrypt" style="text-align: center;">Encrypt</a>
 
 <div class="md5-wrapper">
-    <h3>Decrypted Text:</h3>
-    <pre>@ViewBag.DecryptedText</pre>
+	<h3>Decrypted Text:</h3>
+	<pre>@ViewBag.DecryptedText</pre>
 </div>
+
+@if (@ViewBag.ExecutionTime is not null)
+{
+	<br />
+	<div>
+		<h3>Execution Time:</h3>
+		<p>@ViewBag.ExecutionTime ms</p>
+	</div>
+	<div>
+		<h3>Input Lenght:</h3>
+		<p>@ViewBag.InputLength</p>
+	</div>
+}
