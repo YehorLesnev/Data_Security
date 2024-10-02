@@ -1,5 +1,7 @@
 ﻿using Lab01GUI.Services.Implementation;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Lab01GUI.Controllers;
 
@@ -27,16 +29,29 @@ public class RC5EncryptionController : Controller
 			return BadRequest("No file uploaded.");
 		}
 
-        using var memoryStream = new MemoryStream();
+		using var memoryStream = new MemoryStream();
 
-        await file.CopyToAsync(memoryStream);
-        var fileBytes = memoryStream.ToArray();
+		await file.CopyToAsync(memoryStream);
+		var fileBytes = memoryStream.ToArray();
 
-        var encryptedBytes = _rc5Service.Encrypt(fileBytes, password);
-        var encryptedFileName = Path.GetFileNameWithoutExtension(file.FileName) + ".enc";
+		var encryptedFileName = Path.GetFileNameWithoutExtension(file.FileName) + ".enc";
 
-        return File(encryptedBytes, "application/octet-stream", encryptedFileName);
-    }
+		Stopwatch stopwatch = new();
+		stopwatch.Start();
+
+		var encryptedBytes = _rc5Service.Encrypt(fileBytes, password);
+
+		string tempFilePath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.enc");
+		await System.IO.File.WriteAllBytesAsync(tempFilePath, encryptedBytes);
+
+		stopwatch.Stop();
+		TempData["EncryptedFilePath"] = tempFilePath;
+		TempData["EncryptedFileName"] = Path.GetFileNameWithoutExtension(file.FileName) + ".enc";
+		TempData["ExecutionTime"] = (int)stopwatch.ElapsedMilliseconds;
+		TempData["InputLength"] = (int)file.Length;
+
+		return RedirectToAction("ShowEncryptionResult");
+	}
 
 	[HttpGet]
 	public IActionResult Decrypt()
@@ -53,13 +68,84 @@ public class RC5EncryptionController : Controller
 		}
 
 		using var memoryStream = new MemoryStream();
-        
+
 		await file.CopyToAsync(memoryStream);
-        var fileBytes = memoryStream.ToArray();
+		var fileBytes = memoryStream.ToArray();
 
-        var decryptedBytes = _rc5Service.Decrypt(fileBytes, password);
-        var decryptedFileName = Path.GetFileNameWithoutExtension(file.FileName) + ".dec";
+		Stopwatch stopwatch = new();
+		stopwatch.Start();
 
-        return File(decryptedBytes, "application/octet-stream", decryptedFileName);
-    }
+		var decryptedBytes = _rc5Service.Decrypt(fileBytes, password);
+
+		stopwatch.Stop();
+
+		string tempFilePath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.dec");
+		await System.IO.File.WriteAllBytesAsync(tempFilePath, decryptedBytes);
+
+		TempData["DecryptedFilePath"] = tempFilePath;
+		TempData["DecryptedFileName"] = Path.GetFileNameWithoutExtension(file.FileName) + ".dec";
+		TempData["ExecutionTime"] = (int)stopwatch.ElapsedMilliseconds;
+		TempData["InputLength"] = (int)file.Length;
+
+		return RedirectToAction("ShowDecryptionResult");
+	}
+
+	[HttpGet]
+	public IActionResult ShowDecryptionResult()
+	{
+		// Retrieve decryption time and input length from TempData
+		ViewBag.ExecutionTime = TempData["ExecutionTime"];
+		ViewBag.InputLength = TempData["InputLength"];
+
+		return View("Decrypt");
+	}
+
+	
+	[HttpGet]
+	public IActionResult ShowEncryptionResult()
+	{
+		// Retrieve decryption time and input length from TempData
+		ViewBag.ExecutionTime = TempData["ExecutionTime"];
+		ViewBag.InputLength = TempData["InputLength"];
+
+		return View("Encrypt");
+	}
+
+	[HttpGet]
+	public IActionResult DownloadEncryptedFile()
+	{
+		if (TempData["EncryptedFilePath"] is not string filePath || !System.IO.File.Exists(filePath))
+		{
+			return NoContent(); // No file available for download
+		}
+
+		var fileName = TempData["EncryptedFileName"] as string ?? "encrypted-file.enc";
+
+		// Read the file from disk and return it as a download
+		var fileBytes = System.IO.File.ReadAllBytes(filePath);
+
+		// Delete the file after it's downloaded
+		System.IO.File.Delete(filePath);
+
+		return File(fileBytes, "application/octet-stream", fileName);
+	}
+
+	[HttpGet]
+	public IActionResult DownloadDecryptedFile()
+	{
+		if (TempData["DecryptedFilePath"] is not string filePath || !System.IO.File.Exists(filePath))
+		{
+			return NoContent(); // No file available for download
+		}
+
+		var fileName = TempData["DecryptedFileName"] as string ?? "decrypted-file.dec";
+
+		// Read the file from disk and return it as a download
+		var fileBytes = System.IO.File.ReadAllBytes(filePath);
+
+		// Delete the file after it's downloaded
+		System.IO.File.Delete(filePath);
+
+		return File(fileBytes, "application/octet-stream", fileName);
+	}
 }

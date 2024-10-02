@@ -19,4 +19,22 @@
 		</div>
 		<button type="submit" class="btn btn-primary">Upload and Encrypt</button>
 	</form>
+
+	@if (@ViewBag.ExecutionTime is not null)
+	{
+		<br />
+		<a asp-action="DownloadEncryptedFile" class="btn btn-primary">Download</a>
+		<br />
+		<br />
+		<div>
+			<div>
+				<h5>Execution Time:</h5>
+				<p>@ViewBag.ExecutionTime ms</p>
+			</div>
+			<div>
+				<h5>Input Lenght:</h5>
+				<p>@ViewBag.InputLength</p>
+			</div>
+		</div>
+	}
 </div>
