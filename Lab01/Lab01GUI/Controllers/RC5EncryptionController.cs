@@ -1,7 +1,6 @@
 ﻿using Lab01GUI.Services.Implementation;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Lab01GUI.Controllers;
 
