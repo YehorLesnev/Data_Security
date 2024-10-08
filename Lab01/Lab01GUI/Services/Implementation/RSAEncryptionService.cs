@@ -22,8 +22,8 @@ public class RSAEncryptionService : IRSAEncryptionService
 
 		try
 		{
-			string publicKey = rsa.ToXmlString(false); // false means public key only
-			string privateKey = rsa.ToXmlString(true); // true means public and private key
+			string publicKey = rsa.ToXmlString(false);
+			string privateKey = rsa.ToXmlString(true);
 
 			return new RSAKeyResult(publicKey, privateKey);
 		}
