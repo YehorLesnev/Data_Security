@@ -11,6 +11,7 @@ public static class ServiceRegisterer
 		services.AddScoped<IFileWriterService, FileWriterService>();
 		services.AddScoped<IMD5Service, MD5Service>();
 		services.AddScoped<IRSAEncryptionService, RSAEncryptionService>();
+		services.AddScoped<IDSSService, DSSService>();
 
 		return services;
 	}

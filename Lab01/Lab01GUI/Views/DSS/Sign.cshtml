@@ -1,0 +1,40 @@
+﻿@{
+	var signature = ViewBag.Signature as string;
+	string signatureBytes = ViewBag.SignatureBytes;
+}
+
+<h2>File or Text Signature</h2>
+
+<a asp-action="Verify" style="text-align: center;">Verify</a>
+
+<div class="md5-wrapper">
+	<div style="display: flex;">
+		<form asp-action="SignText" method="post" enctype="multipart/form-data">
+			<label for="privateKeyFile">Private Key:</label>
+			<input type="file" name="privateKeyFile" id="privateKeyFile" required />
+			<label for="inputText">Text:</label>
+			<textarea id="inputText" name="inputText" rows="5" cols="40" required></textarea>
+			<button type="submit">Sign Text</button>
+		</form>
+
+		<form asp-action="SignFile" method="post" enctype="multipart/form-data">
+			<label for="privateKeyFile">Private Key:</label>
+			<input type="file" name="privateKeyFile" id="privateKeyFile" required />
+			<label for="inputFile">File:</label>
+			<input type="file" name="inputFile" id="inputFile" required />
+			<button type="submit">Sign File</button>
+		</form>
+	</div>
+
+	@if (!string.IsNullOrWhiteSpace(signature))
+	{
+		<h4>Signature</h4>
+		<div>
+			<textarea readonly style="width: 750px;">@signature</textarea>
+		</div>
+
+		<a asp-action="DownloadSignature" asp-route-signature="@signatureBytes" class="btn btn-primary">
+			Download Signature
+		</a>
+	}
+</div>

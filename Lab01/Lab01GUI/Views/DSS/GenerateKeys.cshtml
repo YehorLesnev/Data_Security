@@ -1,0 +1,18 @@
+﻿@{
+	ViewData["Title"] = "Generate DSS Keys";
+}
+
+<h2>Generate DSS Keys</h2>
+
+
+<a asp-action="Sign" style="text-align: center;">Sign</a>
+<a asp-action="Verify" style="text-align: center;">Verify</a>
+
+<div class="md5-wrapper">
+	<form asp-action="GenerateKeysAction" method="post">
+		<label for="keySize">Key Size:</label>
+		<input type="number" id="keySize" name="keySize" required min="512" max="1024" step="1" />
+
+		<button type="submit">Generate Keys</button>
+	</form>
+</div>
