@@ -20,11 +20,15 @@ public interface IDSSService
 
 	Task<bool> Verify(string data, IFormFile SignatureFile, IFormFile publicKey);
 
+	Task<bool> Verify(string data, string SignatureFile, IFormFile publicKey);
+
 	bool Verify(byte[] data, byte[] signature, string publicKey);
 
 	Task<bool> Verify(IFormFile file, IFormFile SignatureFile, string publicKey);
 
 	Task<bool> Verify(IFormFile file, IFormFile SignatureFile, IFormFile publicKey);
+
+	Task<bool> Verify(IFormFile file, string SignatureText, IFormFile publicKey);
 
 	void SetKeySize(int keySize);
 

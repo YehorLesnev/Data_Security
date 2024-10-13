@@ -10,13 +10,28 @@
 <a asp-action="Sign" style="text-align: center;">Sign</a>
 
 <div class="md5-wrapper">
+
+	<fieldset>
+		<legend>Select signature input type:</legend>
+		<div>
+			<input type="radio" id="signatureTypeText" name="signatureType" value="text" onclick="toggleSignatureInput('text')" />
+			<label for="signatureTypeText">Text</label>
+		</div>
+
+		<div>
+			<input type="radio" id="signatureTypeFile" name="signatureType" value="file" checked onclick="toggleSignatureInput('file')" />
+			<label for="signatureTypeFile">File</label>
+		</div>
+	</fieldset>
+
 	<div style="display: flex;">
 		<form asp-action="VerifyText" method="post" enctype="multipart/form-data">
 			<label for="inputText">Text for validation:</label>
 			<textarea id="inputText" name="inputText" rows="5" cols="40" required></textarea>
 
 			<label for="SignatureFile">Signature File:</label>
-			<input type="file" name="SignatureFile" id="SignatureFile" required />
+			<input type="file" name="SignatureFile" id="SignatureFile" />
+			<input type="text" name="SignatureText" id="SignatureText" style="display: none;" />
 
 			<label for="publicKeyFile">Public Key:</label>
 			<input type="file" name="publicKeyFile" id="publicKeyFile" required />
@@ -28,7 +43,8 @@
 			<input type="file" name="inputFile" id="inputFile" required />
 
 			<label for="SignatureFile">Signature File:</label>
-			<input type="file" name="SignatureFile" id="SignatureFile" required />
+			<input type="file" name="SignatureFile" id="SignatureFile" />
+			<input type="text" name="SignatureText" id="SignatureText" style="display: none;" />
 
 			<label for="publicKeyFile">Public Key:</label>
 			<input type="file" name="publicKeyFile" id="publicKeyFile" required />
@@ -43,3 +59,15 @@
 		}
 	</div>
 </div>
+
+<script>
+	function toggleSignatureInput(type) {
+			if (type === 'text') {
+				document.querySelectorAll('#SignatureText').forEach((el) => el.style.display = 'block');
+				document.querySelectorAll('#SignatureFile').forEach((el) => el.style.display = 'none');
+			} else {
+				document.querySelectorAll('#SignatureText').forEach((el) => el.style.display = 'none');
+				document.querySelectorAll('#SignatureFile').forEach((el) => el.style.display = 'block');
+			}
+			}
+</script>

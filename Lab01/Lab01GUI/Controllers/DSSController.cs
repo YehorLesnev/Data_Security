@@ -56,11 +56,19 @@ public class DSSController(IDSSService dSSService) : Controller
 	}
 
 	[HttpPost]
-	public async Task<IActionResult> VerifyText(string inputText, IFormFile SignatureFile, IFormFile publicKeyFile)
+	public async Task<IActionResult> VerifyText(string inputText, string SignatureText, IFormFile SignatureFile, IFormFile publicKeyFile)
 	{
-		if (!string.IsNullOrEmpty(inputText) && SignatureFile is not null)
+		if (!string.IsNullOrEmpty(inputText))
 		{
-			ViewBag.IsValid = await dSSService.Verify(inputText, SignatureFile, publicKeyFile);
+			if(SignatureFile is not null)
+			{
+				ViewBag.IsValid = await dSSService.Verify(inputText, SignatureFile, publicKeyFile);
+			}
+			else if(!string.IsNullOrWhiteSpace(SignatureText))
+			{
+				ViewBag.IsValid = await dSSService.Verify(inputText, SignatureText, publicKeyFile);
+			}
+
 			ViewBag.Message = ViewBag.IsValid ? "Signature is valid" : "Signature is invalid";
 
 			return View("Verify");

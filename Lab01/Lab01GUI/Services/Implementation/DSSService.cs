@@ -1,7 +1,6 @@
 ﻿using Lab01GUI.Services.Interfaces;
 using System.Net;
 using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace Lab01GUI.Services.Implementation;
@@ -10,8 +9,8 @@ public class DSSService : IDSSService
 {
 	private int KeySize = 2048;
 
-	public void SetKeySize(int keySize) 
-	 => KeySize = keySize; 
+	public void SetKeySize(int keySize)
+	 => KeySize = keySize;
 
 	public int GetKeySize()
 		=> KeySize;
@@ -19,7 +18,7 @@ public class DSSService : IDSSService
 	public DSSKeyResult GetKeyResult()
 	{
 		using var dsa = new DSACryptoServiceProvider(KeySize);
-		
+
 		var privateKey = dsa.ToXmlString(true);
 		var publicKey = dsa.ToXmlString(false);
 
@@ -90,6 +89,16 @@ public class DSSService : IDSSService
 	public async Task<bool> Verify(IFormFile file, IFormFile SignatureFile, IFormFile publicKey)
 	{
 		return await Verify(file, SignatureFile, await GetFileTextAsync(publicKey));
+	}
+
+	public async Task<bool> Verify(string data, string SignatureText, IFormFile publicKey)
+	{
+		return Verify(Encoding.UTF8.GetBytes(data), Convert.FromHexString(SignatureText), await GetFileTextAsync(publicKey));
+	}
+
+	public async Task<bool> Verify(IFormFile file, string SignatureText, IFormFile publicKey)
+	{
+		return Verify(await GetFileBytesAsync(file), Convert.FromHexString(SignatureText), await GetFileTextAsync(publicKey));
 	}
 
 	private static async Task<byte[]> GetFileBytesAsync(IFormFile file)
