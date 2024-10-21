@@ -1,4 +1,5 @@
 ﻿using Lab01GUI.Services.Interfaces;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
 using System.Text;
@@ -60,11 +61,11 @@ public class DSSController(IDSSService dSSService) : Controller
 	{
 		if (!string.IsNullOrEmpty(inputText))
 		{
-			if(SignatureFile is not null)
+			if (SignatureFile is not null)
 			{
 				ViewBag.IsValid = await dSSService.Verify(inputText, SignatureFile, publicKeyFile);
 			}
-			else if(!string.IsNullOrWhiteSpace(SignatureText))
+			else if (!string.IsNullOrWhiteSpace(SignatureText))
 			{
 				ViewBag.IsValid = await dSSService.Verify(inputText, SignatureText, publicKeyFile);
 			}
@@ -92,18 +93,21 @@ public class DSSController(IDSSService dSSService) : Controller
 	}
 
 	[HttpPost]
-	public async Task<IActionResult> VerifyFile(IFormFile inputFile, IFormFile SignatureFile, IFormFile publicKeyFile)
+	public async Task<IActionResult> VerifyFile(IFormFile inputFile, string SignatureText, IFormFile SignatureFile, IFormFile publicKeyFile)
 	{
-		if (inputFile is not null && SignatureFile is not null)
+		if (inputFile is not null)
 		{
-			ViewBag.IsValid = await dSSService.Verify(inputFile, SignatureFile, publicKeyFile);
-			ViewBag.Message = ViewBag.IsValid ? "The file signature is valid." : "The file signature is not valid.";
-		}
-		else
-		{
-			ViewBag.Message = "Please upload both a file and a signature file.";
-		}
+			if (SignatureFile is not null)
+			{
+				ViewBag.IsValid = await dSSService.Verify(inputFile, SignatureFile, publicKeyFile);
+			}
+			else if (!string.IsNullOrWhiteSpace(SignatureText))
+			{
+				ViewBag.IsValid = await dSSService.Verify(inputFile, SignatureText, publicKeyFile);
+			}
 
+			ViewBag.Message = ViewBag.IsValid ? "Signature is valid" : "Signature is invalid";
+		}
 		return View("Verify");
 	}
 
